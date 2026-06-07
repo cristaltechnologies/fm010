@@ -8,7 +8,7 @@ Run:
     python fm010_app.py
 """
 import os
-import psycopg2.extras
+import psycopg3.extras
 from datetime import date, datetime
 from flask import (Flask, render_template, request,
                    redirect, url_for, flash)
