@@ -1,12 +1,3 @@
-"""
-fm010_app.py  —  FM010 PTX Parametric File Maintenance
-Converted from COBOL FM010.CBL + all .CP copy files
-Modern corporate UI using separate Jinja2 templates.
-
-Run:
-    pip install flask psycopg2-binary python-dotenv
-    python fm010_app.py
-"""
 import os
 import psycopg3.extras
 from datetime import date, datetime
@@ -29,8 +20,6 @@ ptx_svc = PtxService()
 mfa_svc = MfaService()
 
 OK_STATUS = "00"
-
-# ── helpers ────────────────────────────────────────────────────────────────
 
 def sys_date() -> str:
     return date.today().strftime("%d-%m-%Y")
@@ -78,7 +67,7 @@ def _build_rec_from_form(form, ptx_key, ptx_code):
         rec.ptx_vending_ref   = int(form.get("ptx_vending_ref", 0) or 0)
     return rec
 
-# ── routes ─────────────────────────────────────────────────────────────────
+
 
 @app.route("/")
 def main_menu():
@@ -111,7 +100,6 @@ def stop_run():
             "color:#374151'>Program FM010 ended. You may close this tab.</div>")
 
 
-# ── ADDITIONS ──────────────────────────────────────────────────────────────
 
 @app.route("/add", methods=["GET", "POST"])
 def additions():
@@ -156,7 +144,7 @@ def add_data_entry():
                   ptx_type=ptx_type, rec=None)
 
 
-# ── MODIFICATIONS ──────────────────────────────────────────────────────────
+
 
 @app.route("/modify", methods=["GET", "POST"])
 def modifications():
@@ -201,7 +189,7 @@ def modify_data_entry():
                   ptx_type=ptx_type, rec=rec)
 
 
-# ── DELETIONS ──────────────────────────────────────────────────────────────
+
 
 @app.route("/delete", methods=["GET", "POST"])
 def deletions():
@@ -247,7 +235,6 @@ def delete_confirm():
     return redirect(url_for("main_menu"))
 
 
-# ── entry point ────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
     try:
