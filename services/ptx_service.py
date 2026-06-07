@@ -3,7 +3,7 @@ services/ptx_service.py
 All I/O for the PTX file — replaces ISAM operations from selptx.cp / recptx.cp
 Mirrors COBOL ACCESS MODE IS DYNAMIC (random + sequential access).
 """
-import psycopg2
+import psycopg
 from db.connection import get_conn
 from models.ptx import PtxRecord, _pad, _zpad
 
@@ -63,7 +63,7 @@ class PtxService:
     # For explicit lock (e.g. SELECT FOR UPDATE), use this variant.
     def read_lock(self, ptx_key: str) -> PtxRecord | None:
         try:
-            with self._conn().cursor(cursor_factory=psycopg2.extras.RealDictCursor) as cur:
+            with self._conn().cursor(cursor_factory=psycopg.rows.dict_row) as cur:
                 cur.execute(
                     "SELECT ptx_key, ptx_code1, ptx_desc, ptx_subdesc, ptx_other_data "
                     "FROM ptx WHERE ptx_key = %s FOR UPDATE NOWAIT",
