@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% set active_nav = {'Add': 'add', 'Modify': 'modify', 'Delete': 'delete'}[mode] %}
+
+{% block title %}{{ mode }} Record — FM010{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <div class="breadcrumb-text">PTX Records / {{ mode }}</div>
+    <div class="page-title">{{ mode }} a PTX record</div>
+  </div>
+</div>
+
+<div class="form-card">
+  <div class="form-section-title">Identify record</div>
+  <form method="POST">
+    <div class="mb-3">
+      <label class="form-label">PTX code type</label>
+      <select name="ptx_code" class="form-select" required>
+        <option value="">— Select type —</option>
+        <option value="1">1 — JVX type</option>
+        <option value="2">2 — CLTX type</option>
+        <option value="3">3 — STX type</option>
+        <option value="9">9 — Parametric GAN</option>
+        <option value="10">10 — WH codes</option>
+      </select>
+    </div>
+    <div class="mb-4">
+      <label class="form-label">Type number <span style="color:#94A3B8">(3 digits)</span></label>
+      <input type="number" name="ptx_type" class="form-control"
+             min="1" max="999" placeholder="e.g. 001" required
+             style="max-width:180px">
+      <div class="form-text">This is the sub-code within the selected type.</div>
+    </div>
+
+    <div style="display:flex;gap:10px">
+      <button type="submit" class="btn-primary-custom">
+        <i class="ti ti-arrow-right" style="font-size:15px"></i>
+        Continue
+      </button>
+      <a href="{{ url_for('main_menu') }}" class="btn-secondary-custom">
+        <i class="ti ti-x" style="font-size:15px"></i> Cancel
+      </a>
+    </div>
+  </form>
+</div>
+{% endblock %}

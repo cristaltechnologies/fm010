@@ -1,0 +1,135 @@
+{% extends "base.html" %}
+{% set active_nav = {'Add': 'add', 'Modify': 'modify'}[mode] %}
+
+{% block title %}{{ mode }} Record — FM010{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <div class="breadcrumb-text">PTX Records / {{ mode }}</div>
+    <div class="page-title">{{ mode }} PTX record</div>
+  </div>
+</div>
+
+<div class="form-card">
+
+  <!-- Record identity summary -->
+  <div style="background:#F8FAFC;border:1px solid #E2E8F0;border-radius:8px;
+              padding:12px 16px;margin-bottom:20px;
+              display:flex;gap:24px;flex-wrap:wrap">
+    <div>
+      <div style="font-size:11px;color:#94A3B8;margin-bottom:2px">PTX key</div>
+      <div style="font-family:Consolas,monospace;font-size:13px;color:#1A202C">
+        {{ ptx_key.strip() }}
+      </div>
+    </div>
+    <div>
+      <div style="font-size:11px;color:#94A3B8;margin-bottom:2px">Code</div>
+      <div style="font-size:13px;font-weight:500;color:#185FA5">{{ ptx_code }}</div>
+    </div>
+    <div>
+      <div style="font-size:11px;color:#94A3B8;margin-bottom:2px">Type</div>
+      <div style="font-size:13px;color:#1A202C">{{ ptx_type }}</div>
+    </div>
+  </div>
+
+  <form method="POST">
+    <input type="hidden" name="ptx_key"  value="{{ ptx_key }}">
+    <input type="hidden" name="ptx_code" value="{{ ptx_code }}">
+    <input type="hidden" name="ptx_type" value="{{ ptx_type }}">
+
+    <!-- Description -->
+    <div class="form-section-title">Description</div>
+    <div class="mb-3">
+      <label class="form-label">Description <span style="color:#E24B4A">*</span></label>
+      <input type="text" name="ptx_desc" class="form-control"
+             maxlength="25" required
+             value="{{ rec.ptx_desc.strip() if rec else '' }}"
+             placeholder="Up to 25 characters">
+    </div>
+
+    {% if ptx_code | int == 9 %}
+    <!-- ── GAN data entry ── -->
+    <div class="form-section-title">GAN details</div>
+    <div class="mb-3">
+      <label class="form-label">GAN number <span style="color:#E24B4A">*</span></label>
+      <input type="text" name="gan_in" class="form-control"
+             maxlength="10" required
+             value="{{ rec.ptx_gan.strip() if rec else '' }}"
+             placeholder="e.g. 341.010070"
+             style="font-family:Consolas,monospace;max-width:200px">
+      <div class="form-text">Format: NNN.XXXXXX (main account 100–499)</div>
+    </div>
+    <div class="mb-4">
+      <label class="form-label">Program name <span style="color:#E24B4A">*</span></label>
+      <input type="text" name="ptx_gan_program_name" class="form-control"
+             maxlength="10" required
+             value="{{ rec.ptx_gan_program_name.strip() if rec else '' }}"
+             placeholder="Up to 10 characters"
+             style="max-width:240px">
+    </div>
+
+    {% else %}
+    <!-- ── Type data entry ── -->
+    <div class="form-section-title">Classification</div>
+    <div class="mb-3">
+      <label class="form-label">Short description</label>
+      <input type="text" name="ptx_short_desc" class="form-control"
+             maxlength="4"
+             value="{{ rec.ptx_short_desc.strip() if rec else '' }}"
+             placeholder="4 chars"
+             style="max-width:120px">
+    </div>
+
+    {% if ptx_code | int != 1 %}
+    <div class="form-section-title">Reference numbers</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px" class="mb-3">
+      <div>
+        <label class="form-label">VanSales / Book &amp; Ship ref</label>
+        <input type="number" name="ptx_vansales_ref" class="form-control"
+               value="{{ rec.ptx_vansales_ref if rec else 0 }}" min="0">
+      </div>
+      <div>
+        <label class="form-label">SmanSales reference</label>
+        <input type="number" name="ptx_smansales_ref" class="form-control"
+               value="{{ rec.ptx_smansales_ref if rec else 0 }}" min="0">
+      </div>
+      <div>
+        <label class="form-label">IceSales / manual ref</label>
+        <input type="number" name="ptx_icesales_ref" class="form-control"
+               value="{{ rec.ptx_icesales_ref if rec else 0 }}" min="0">
+      </div>
+      <div>
+        <label class="form-label">Al Quoz ITV ref</label>
+        <input type="number" name="ptx_quoz_itv_ref" class="form-control"
+               value="{{ rec.ptx_quoz_itv_ref if rec else 0 }}" min="0">
+      </div>
+      <div>
+        <label class="form-label">Vending INV ref</label>
+        <input type="number" name="ptx_vending_ref" class="form-control"
+               value="{{ rec.ptx_vending_ref if rec else 0 }}" min="0">
+      </div>
+    </div>
+
+    {% else %}
+    <div class="form-section-title">Reference numbers</div>
+    <div class="mb-3" style="max-width:260px">
+      <label class="form-label">VanSales collection ref</label>
+      <input type="number" name="ptx_vansales_coll_ref" class="form-control"
+             value="{{ rec.ptx_vansales_coll_ref if rec else 0 }}" min="0">
+    </div>
+    {% endif %}
+    {% endif %}
+
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button type="submit" class="btn-primary-custom">
+        <i class="ti ti-device-floppy" style="font-size:15px"></i>
+        Save record
+      </button>
+      <a href="{{ url_for('main_menu') }}" class="btn-secondary-custom">
+        <i class="ti ti-x" style="font-size:15px"></i> Cancel
+      </a>
+    </div>
+  </form>
+</div>
+{% endblock %}

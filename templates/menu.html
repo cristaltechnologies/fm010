@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% set active_nav = "ptx" %}
+
+{% block title %}PTX Records — FM010{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <div class="breadcrumb-text">Parametric files</div>
+    <div class="page-title">PTX Records</div>
+  </div>
+  <a href="{{ url_for('additions') }}" class="btn-primary-custom">
+    <i class="ti ti-plus" style="font-size:15px"></i> Add record
+  </a>
+</div>
+
+<div class="content-card">
+  <div class="card-toolbar">
+    <form method="GET" action="{{ url_for('main_menu') }}"
+          style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:6px;background:#F8FAFC;
+                  border:1px solid #E2E8F0;border-radius:8px;
+                  padding:6px 12px;font-size:13px;color:#94A3B8">
+        <i class="ti ti-search" style="font-size:15px"></i>
+        <input name="q" value="{{ q or '' }}"
+               placeholder="Search key or description…"
+               style="border:none;background:none;outline:none;
+                      font-size:13px;color:#1A202C;width:200px">
+      </div>
+      <select name="code" style="font-size:13px;border:1px solid #E2E8F0;
+              border-radius:8px;padding:6px 10px;background:#F8FAFC;color:#374151">
+        <option value="">All types</option>
+        <option value="1"  {% if code=='1'  %}selected{% endif %}>JVX</option>
+        <option value="2"  {% if code=='2'  %}selected{% endif %}>CLTX</option>
+        <option value="3"  {% if code=='3'  %}selected{% endif %}>STX</option>
+        <option value="9"  {% if code=='9'  %}selected{% endif %}>GAN</option>
+        <option value="10" {% if code=='10' %}selected{% endif %}>WH Codes</option>
+      </select>
+      <button type="submit" class="btn-secondary-custom" style="padding:6px 14px">
+        <i class="ti ti-filter" style="font-size:14px"></i> Filter
+      </button>
+      {% if q or code %}
+      <a href="{{ url_for('main_menu') }}" class="btn-secondary-custom"
+         style="padding:6px 14px;color:#A32D2D;border-color:#F09595">
+        <i class="ti ti-x" style="font-size:14px"></i> Clear
+      </a>
+      {% endif %}
+    </form>
+    <span style="font-size:12px;color:#94A3B8">
+      {{ records|length }} record{{ 's' if records|length != 1 }}
+    </span>
+  </div>
+
+  {% if records %}
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>PTX key</th>
+        <th>Code</th>
+        <th>Type</th>
+        <th>Description</th>
+        <th>Sub description</th>
+        <th style="width:130px">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in records %}
+      <tr>
+        <td class="key-col">{{ r.ptx_key.strip() }}</td>
+        <td>
+          {% set code_int = r.ptx_code | int %}
+          {% if code_int == 1 %}
+            <span class="badge-type badge-jvx">JVX</span>
+          {% elif code_int == 2 %}
+            <span class="badge-type badge-cltx">CLTX</span>
+          {% elif code_int == 3 %}
+            <span class="badge-type badge-stx">STX</span>
+          {% elif code_int == 9 %}
+            <span class="badge-type badge-gan">GAN</span>
+          {% elif code_int == 10 %}
+            <span class="badge-type badge-wh">WH</span>
+          {% else %}
+            <span class="badge-type badge-other">{{ r.ptx_code.strip() }}</span>
+          {% endif %}
+        </td>
+        <td>{{ r.ptx_minor_key.strip() or '—' }}</td>
+        <td>{{ r.ptx_desc.strip() or '—' }}</td>
+        <td style="color:#64748B">{{ r.ptx_subdesc.strip() or '—' }}</td>
+        <td>
+          <a href="{{ url_for('modify_data_entry',
+                     ptx_key=r.ptx_key,
+                     ptx_code=r.ptx_code|int,
+                     ptx_type=r.ptx_minor_key[:3]|int) }}"
+             class="row-action">
+            <i class="ti ti-edit" style="font-size:13px"></i> Edit
+          </a>
+          <form method="POST" action="{{ url_for('deletions') }}"
+                style="display:inline"
+                onsubmit="return confirm('Delete {{ r.ptx_key.strip() }}?')">
+            <input type="hidden" name="ptx_key_direct" value="{{ r.ptx_key }}">
+            <button type="submit" class="row-action danger">
+              <i class="ti ti-trash" style="font-size:13px"></i>
+            </button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty-state">
+    <i class="ti ti-database-off"></i>
+    <p>No records found{% if q or code %} matching your filter{% endif %}.</p>
+    <a href="{{ url_for('additions') }}" class="btn-primary-custom"
+       style="margin-top:12px;display:inline-flex">
+      <i class="ti ti-plus" style="font-size:14px"></i> Add first record
+    </a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

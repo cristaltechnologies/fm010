@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% set active_nav = "delete" %}
+
+{% block title %}Delete Record — FM010{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <div class="breadcrumb-text">PTX Records / Delete</div>
+    <div class="page-title">Delete PTX record</div>
+  </div>
+</div>
+
+<div class="form-card">
+  <div class="delete-box">
+    <div style="font-size:13px;font-weight:600;color:#7A1F1F;margin-bottom:10px;
+                display:flex;align-items:center;gap:6px">
+      <i class="ti ti-alert-triangle" style="font-size:16px"></i>
+      This action cannot be undone
+    </div>
+    <div style="display:flex;gap:32px;flex-wrap:wrap">
+      <div>
+        <div style="font-size:11px;color:#94A3B8;margin-bottom:2px">PTX key</div>
+        <div class="rec-key">{{ rec.ptx_key.strip() }}</div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:#94A3B8;margin-bottom:2px">Description</div>
+        <div style="font-size:13px;color:#374151">{{ rec.ptx_desc.strip() or '—' }}</div>
+      </div>
+      <div>
+        <div style="font-size:11px;color:#94A3B8;margin-bottom:2px">Sub description</div>
+        <div style="font-size:13px;color:#374151">{{ rec.ptx_subdesc.strip() or '—' }}</div>
+      </div>
+    </div>
+  </div>
+
+  <p style="font-size:13px;color:#374151;margin-bottom:20px">
+    Are you sure you want to permanently delete this PTX record?
+  </p>
+
+  <form method="POST" action="{{ url_for('delete_confirm') }}"
+        style="display:flex;gap:10px">
+    <input type="hidden" name="ptx_key" value="{{ rec.ptx_key }}">
+    <button type="submit" name="confirm" value="Y" class="btn-danger-custom">
+      <i class="ti ti-trash" style="font-size:15px"></i> Yes, delete
+    </button>
+    <a href="{{ url_for('main_menu') }}" class="btn-secondary-custom">
+      <i class="ti ti-arrow-left" style="font-size:15px"></i> Cancel
+    </a>
+  </form>
+</div>
+{% endblock %}
